@@ -1,0 +1,97 @@
+x-xrplevm-build: &xrplevm-build
+  context: .
+  dockerfile: Dockerfile
+
+services:
+  xrplevm-a:
+    image: xrplevm-local:dev
+    build: *xrplevm-build
+    container_name: xrplevm-a
+    command: ["/usr/local/bin/start-persistent.sh"]
+    environment:
+      CHAIN_ID: "xrplevm_1450001-1"
+      MONIKER: "xrplevm-a"
+      CHAIN_LABEL: "Chain A"
+    ports:
+      - "26657:26657"
+      - "1317:1317"
+      - "9090:9090"
+      - "8545:8545"
+      - "8546:8546"
+    networks:
+      xrplevm_net:
+        ipv4_address: 172.30.0.10
+    volumes:
+      - xrplevm-a-data:/app/.exrpd
+
+  xrplevm-b:
+    image: xrplevm-local:dev
+    container_name: xrplevm-b
+    command: ["/usr/local/bin/start-persistent.sh"]
+    environment:
+      CHAIN_ID: "xrplevm_1450002-1"
+      MONIKER: "xrplevm-b"
+      CHAIN_LABEL: "Chain B"
+    ports:
+      - "36657:26657"
+      - "2317:1317"
+      - "19090:9090"
+      - "9545:8545"
+      - "9546:8546"
+    networks:
+      xrplevm_net:
+        ipv4_address: 172.30.0.11
+    volumes:
+      - xrplevm-b-data:/app/.exrpd
+
+  xrplevm-c:
+    image: xrplevm-local:dev
+    container_name: xrplevm-c
+    command: ["/usr/local/bin/start-persistent.sh"]
+    environment:
+      CHAIN_ID: "xrplevm_1450003-1"
+      MONIKER: "xrplevm-c"
+      CHAIN_LABEL: "Chain C"
+    ports:
+      - "46657:26657"
+      - "3317:1317"
+      - "29090:9090"
+      - "10545:8545"
+      - "10546:8546"
+    networks:
+      xrplevm_net:
+        ipv4_address: 172.30.0.12
+    volumes:
+      - xrplevm-c-data:/app/.exrpd
+
+  yui-relayer:
+    image: yui-relayer-local:dev
+    build:
+      context: ./yui-relayer
+      dockerfile: Dockerfile
+    container_name: yui-relayer
+    entrypoint: ["sleep"]
+    command: ["infinity"]
+    volumes:
+      - ./relayer_config/yui:/root/.yui-relayer
+    depends_on:
+      - xrplevm-a
+      - xrplevm-b
+      - xrplevm-c
+    networks:
+      xrplevm_net:
+        ipv4_address: 172.30.0.20
+
+networks:
+  xrplevm_net:
+    name: xrplevm_bridge
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+          gateway: 172.30.0.1
+
+volumes:
+  xrplevm-a-data:
+  xrplevm-b-data:
+  xrplevm-c-data:

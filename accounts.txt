@@ -1,0 +1,31 @@
+######################
+#### Alice (Chain A e B)
+######################
+
+0x6f6c82025cfa145dd13b614aa4289ad6ca856e53
+ethm1dakgyqjulg29m5fmv992g2y66m9g2mjn6hahwg
+0xD8161FD5FDF4EB216A6556DC639A2543B0ED9ABDBCEB9971FE08CFBA56F588C8
+birth rebuild refuse area aisle language bullet pride place clutch paddle drama
+
+######################
+#### Relayer Chain A
+######################
+
+0xd01D6027860c2E2e37295d3dE4B5a5f46F68d52f
+ethm16qwkqfuxpshzudeft577fdd973hk34f0nlk6ss
+0x82d1b15eb8f18be874762d6ad5a4e1476aa984bc5b14ecd994dc8f03ec11b7ef
+ozone drill grab fiber curtain grace pudding thank cruise elder eight picnic
+
+cosmos1ad3lc5tswq7vgc4rqsa0ad9yg5zcsy3f3zxlps
+
+######################
+#### Relayer Chain B
+######################
+
+0xc70eC8094CCE52B6574A5a2b7bf0c7D8288d77cC
+ethm1cu8vsz2veeftv462tg4hhux8mq5g6a7vgvfkl4
+0xa024991551147ee4db00d16b1022e97b950bb46485a12e79b484f2d65f7c63df
+scheme spot photo card baby mountain device kick cradle pact join borrow
+
+
+curl -sS   "http://localhost:1317/cosmos/tx/v1beta1/txs/0C792D795044AA54170E6EC4A551678D44080BCC34B523107D6CFA684DEA081E"   -o tx.json

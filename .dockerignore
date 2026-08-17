@@ -1,0 +1,16 @@
+.env
+*.env
+
+.venv
+*.venv
+
+.git
+.gitignore
+yui-relayer/.git
+yui-relayer/build
+
+node_modules
+__pycache__
+*.pyc
+
+.exrpd

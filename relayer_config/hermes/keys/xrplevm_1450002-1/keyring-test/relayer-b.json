@@ -1,0 +1,28 @@
+{
+  "private_key": "a024991551147ee4db00d16b1022e97b950bb46485a12e79b484f2d65f7c63df",
+  "public_key": "02f98ce818e35ba0a094e99eca0845ca19bed0f557161fd4f791e8152cca92696d",
+  "address": [
+    199,
+    14,
+    200,
+    9,
+    76,
+    206,
+    82,
+    182,
+    87,
+    74,
+    90,
+    43,
+    123,
+    240,
+    199,
+    216,
+    40,
+    141,
+    119,
+    204
+  ],
+  "address_type": "Ethermint",
+  "account": "ethm1cu8vsz2veeftv462tg4hhux8mq5g6a7vgvfkl4"
+}
