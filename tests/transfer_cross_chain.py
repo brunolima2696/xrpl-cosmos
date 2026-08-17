@@ -8,7 +8,7 @@ from utils.broadcast import *
 from utils.converter import *
 
 ### Source
-SOURCE_CHAIN = "Chain A"
+SOURCE_CHAIN = "xrplevm-a"
 SOURCE_COSMOS_ADDRESS = "ethm1dakgyqjulg29m5fmv992g2y66m9g2mjn6hahwg"
 SOURCE_EVM_PRIVATE_KEY = "D8161FD5FDF4EB216A6556DC639A2543B0ED9ABDBCEB9971FE08CFBA56F588C8"
 SOURCE_CHANNEL = "channel-2"
@@ -16,7 +16,7 @@ SOURCE_PORT = "transfer"
 
 
 ### Destination
-DESTINATION_CHAIN = "Chain B"
+DESTINATION_CHAIN = "xrplevm-b"
 DESTINATION_COSMOS_ADDRESS = "ethm1dakgyqjulg29m5fmv992g2y66m9g2mjn6hahwg"
 
 

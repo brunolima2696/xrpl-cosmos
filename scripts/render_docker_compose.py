@@ -30,7 +30,7 @@ def render_chain_service(chain, include_build=False):
     environment:
       CHAIN_ID: {json.dumps(str(chain["chain_id"]))}
       MONIKER: {json.dumps(str(chain["name"]))}
-      CHAIN_LABEL: {json.dumps(str(chain["label"]))}
+      CHAIN_NAME: {json.dumps(str(chain["name"]))}
     ports:
       - "{chain["rpc_port"]}:26657"
       - "{chain["rest_port"]}:1317"

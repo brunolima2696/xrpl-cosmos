@@ -13,7 +13,6 @@ def find_chain(chain_name):
     for chain in chains:
         identifiers = [
             chain.get("name"),
-            chain.get("label"),
             chain.get("service"),
             chain.get("chain_id"),
         ]

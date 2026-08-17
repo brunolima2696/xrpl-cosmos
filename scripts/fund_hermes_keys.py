@@ -59,12 +59,12 @@ def fund_relayer(chain):
     signed = w3.eth.account.sign_transaction(tx, alice_private_key)
     tx_hash = w3.eth.send_raw_transaction(signed.raw_transaction)
 
-    print(f"{chain['label']}: enviando 100 XRP para {relayer_address}")
-    print(f"{chain['label']}: tx {tx_hash.hex()}")
+    print(f"{chain['name']}: enviando 100 XRP para {relayer_address}")
+    print(f"{chain['name']}: tx {tx_hash.hex()}")
 
     receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 
-    print(f"{chain['label']}: confirmado no bloco {receipt.blockNumber}")
+    print(f"{chain['name']}: confirmado no bloco {receipt.blockNumber}")
 
 
 def main():

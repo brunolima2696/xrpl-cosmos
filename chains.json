@@ -2,7 +2,6 @@
   "chains": [
     {
       "name": "xrplevm-a",
-      "label": "Chain A",
       "service": "xrplevm-a",
       "chain_id": "xrplevm_1450001-1",
       "ip": "172.30.0.10",
@@ -16,7 +15,6 @@
     },
     {
       "name": "xrplevm-b",
-      "label": "Chain B",
       "service": "xrplevm-b",
       "chain_id": "xrplevm_1450002-1",
       "ip": "172.30.0.11",
@@ -31,7 +29,6 @@
     },
     {
       "name": "xrplevm-c",
-      "label": "Chain C",
       "service": "xrplevm-c",
       "chain_id": "xrplevm_1450003-1",
       "ip": "172.30.0.12",

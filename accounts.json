@@ -1,0 +1,46 @@
+{
+  "accounts": [
+    {
+      "name": "alice",
+      "chains": [
+        "xrplevm-a",
+        "xrplevm-b",
+        "xrplevm-c"
+      ],
+      "evm_address": "0x6f6c82025cfa145dd13b614aa4289ad6ca856e53",
+      "cosmos_address": "ethm1dakgyqjulg29m5fmv992g2y66m9g2mjn6hahwg",
+      "private_key": "0xD8161FD5FDF4EB216A6556DC639A2543B0ED9ABDBCEB9971FE08CFBA56F588C8",
+      "mnemonic": "birth rebuild refuse area aisle language bullet pride place clutch paddle drama"
+    },
+    {
+      "name": "relayer-xrplevm-a",
+      "chains": [
+        "xrplevm-a"
+      ],
+      "evm_address": "0xeB63fc5170703CC462a3043aFEb4A44505881229",
+      "cosmos_address": "ethm1ad3lc5tswq7vgc4rqsa0ad9yg5zcsy3f2vgazj",
+      "private_key": "0xf71f450bcc4c431546284095005445d2e5203ab1d156cee76e10ee467936642d",
+      "mnemonic": "ozone drill grab fiber curtain grace pudding thank cruise elder eight picnic"
+    },
+    {
+      "name": "relayer-xrplevm-b",
+      "chains": [
+        "xrplevm-b"
+      ],
+      "evm_address": "0xF784b2caE7D6c34a887F2B2ca4781a468b213213",
+      "cosmos_address": "ethm177zt9jh86mp54zrl9vk2g7q6g69jzvsnl2qt8f",
+      "private_key": "0x11b193488e0de9a362df35fe0a9d14ec7bfcbfa872c26633dca90b254ef726f6",
+      "mnemonic": "scheme spot photo card baby mountain device kick cradle pact join borrow"
+    },
+    {
+      "name": "relayer-xrplevm-c",
+      "chains": [
+        "xrplevm-c"
+      ],
+      "evm_address": "0xeB104BfbC4c4cA5f4bb5A02803C20721763aAAB2",
+      "cosmos_address": "ethm1avgyh77ycn997ja45q5q8ss8y9mr424jm5v3kr",
+      "private_key": "0xe0aff28c65d3d0dc3836e890414b99758a0a166291bdacd880cb1ca8a1a0e6bc",
+      "mnemonic": "legal winner thank year wave sausage worth useful legal winner thank yellow"
+    }
+  ]
+}

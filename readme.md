@@ -1,17 +1,125 @@
-# XRPL EVM Sidechains locais com YUI Relayer
+<div align="center" id="topo">
 
-Este projeto sobe três chains XRPL EVM locais (`xrplevm-a`, `xrplevm-b` e
-`xrplevm-c`) e usa o YUI Relayer para comunicação IBC.
+# <code><strong>Interoperabilidade XRPL EVM Sidechains locais via YUI Relayer</strong></code>
+
+Ambiente local para validar interoperabilidade IBC entre chains XRPL EVM independentes usando o YUI Relayer e Docker Compose.
+
+[![Go](https://img.shields.io/badge/Go-1.23.8-00ADD8?style=for-the-badge&logo=go)](https://go.dev/)
+[![Docker](https://img.shields.io/badge/Docker-29.2.0-2496ED?style=for-the-badge&logo=docker)](https://docs.docker.com/engine/)
+[![Docker Compose](https://img.shields.io/badge/Docker_Compose-v5.0.2-2496ED?style=for-the-badge&logo=docker)](https://docs.docker.com/compose/)
+[![Python](https://img.shields.io/badge/Python-3.13.14-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![IBC](https://img.shields.io/badge/IBC-ICS--20-6F42C1?style=for-the-badge)](https://ibcprotocol.dev/)
+[![YUI Relayer](https://img.shields.io/badge/YUI_Relayer-v0.5.20-FF8C00?style=for-the-badge)](https://github.com/brunolima2696/yui-relayer)
+
+</div>
+
+---
+
+# 📑 Índice
+
+- [📌 Sobre](#sobre)
+- [🏗️ Arquitetura](#arquitetura)
+- [📁 Estrutura do projeto](#estrutura)
+- [▶️ Como executar](#execucao)
+- [⚙️ Modos do setup](#setup)
+- [🧪 Transferência IBC](#transferencia)
+- [➕ Adicionar uma chain](#nova-chain)
+- [🧹 Limpeza](#limpeza)
+- [📄 Código-fonte](#codigo-fonte)
+
+---
+
+<a id="sobre"></a>
+# 📌 Sobre
+
+O projeto sobe três chains XRPL EVM locais e independentes:
+
+| Nome | Chain ID | RPC Cosmos | REST | RPC EVM |
+|---|---|---:|---:|---:|
+| `xrplevm-a` | `xrplevm_1450001-1` | `26657` | `1317` | `8545` |
+| `xrplevm-b` | `xrplevm_1450002-1` | `36657` | `2317` | `9545` |
+| `xrplevm-c` | `xrplevm_1450003-1` | `46657` | `3317` | `10545` |
+
+O YUI Relayer realiza o handshake IBC — clients, connection e channel — e
+relaya pacotes ICS-20 entre os paths configurados. O path padrão conecta
+`xrplevm-a` e `xrplevm-b`.
+
+O fork do YUI inclui compatibilidade com os eventos emitidos pelo `ibc-go v10`,
+além do Dockerfile usado pelo Compose. Ele é mantido como submódulo Git no
+commit validado pelo repositório principal.
 
 
-## Pré-requisitos
+[⬆ Voltar ao topo](#topo)
 
-- Docker;
-- Git;
-- Python 3;
+---
 
+<a id="arquitetura"></a>
+# 🏗️ Arquitetura
 
-## 1. Preparar o ambiente Python
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Teste as transfer_cross_chain.py
+    participant A as XRPL EVM A
+    participant YUI as YUI Relayer
+    participant B as XRPL EVM B
+
+    Teste->>A: MsgTransfer assinada via RPC
+    A-->>YUI: Evento IBC send_packet
+    YUI->>A: Consulta pacote e prova
+    YUI->>B: MsgRecvPacket
+    B-->>YUI: Acknowledgement
+    YUI->>A: MsgAcknowledgement
+```
+
+O teste envia a transação somente para a chain de origem. O relayer detecta o
+evento `send_packet`, entrega o pacote no destino e devolve o acknowledgement.
+
+[⬆ Voltar ao topo](#topo)
+
+---
+
+<a id="estrutura"></a>
+# 📁 Estrutura do projeto
+
+```text
+xrpl-cosmos/
+├── Dockerfile                  # build da imagem local do XRPL EVM Node
+├── docker-compose.yaml         # chains e container persistente do YUI
+├── chains.json                 # metadados, portas e chaves das chains
+├── requirements.txt            # dependências dos scripts Python
+├── relayer_config/
+│   └── yui/                    # configuração e estado persistente do YUI
+├── scripts/
+│   ├── render_docker_compose.py
+│   ├── setup_yui.py            # orquestrador do provisionamento
+├── tests/
+│   └── transfer_cross_chain.py # transferência ICS-20
+├── utils/                      # consultas e conversões auxiliares
+└── yui-relayer/                # submódulo do fork do YUI
+```
+
+[⬆ Voltar ao topo](#topo)
+
+---
+
+<a id="execucao"></a>
+# ▶️ Como executar
+
+## 1. Clonar o projeto
+
+```bash
+git clone --recurse-submodules https://github.com/brunolima2696/xrpl-cosmos.git
+cd xrpl-cosmos
+```
+
+Se o repositório já foi clonado sem o submódulo:
+
+```bash
+git submodule update --init --recursive
+```
+
+## 2. Preparar o Python
 
 No Git Bash do Windows:
 
@@ -21,58 +129,43 @@ source .venv/Scripts/activate
 python -m pip install -r requirements.txt
 ```
 
-No Linux ou macOS, a ativação é feita com:
+No Linux, use `source .venv/bin/activate` para ativar o ambiente.
 
-```bash
-source .venv/bin/activate
-```
-
-Confirme que o comando `python` aponta para o ambiente virtual:
+Confirme o interpretador:
 
 ```bash
 python -c "import sys; print(sys.executable)"
 ```
 
-## 2. Configurar as variáveis de ambiente
-
-Crie o `.env` a partir do exemplo:
+## 3. Configurar o ambiente
 
 ```bash
 cp .env.example .env
 ```
 
-O arquivo define a rede Docker, o IP do YUI e a conta local usada para financiar
-as chaves do relayer. Para a configuração padrão, os valores do exemplo podem
-ser mantidos.
+O `.env.example` contém valores próprios para o ambiente local. Revise-os antes
+de continuar.
 
-## 3. Gerar o Docker Compose
-
-O Compose é gerado a partir do `chains.json` e do `.env`:
+## 4. Gerar o Compose
 
 ```bash
 python scripts/render_docker_compose.py
 ```
 
-Execute esse comando novamente sempre que adicionar ou alterar uma chain no
-`chains.json`.
+O script usa o `chains.json` e o `.env`. Execute-o novamente após adicionar ou
+alterar uma chain.
 
-## 4. Subir os containers
+## 5. Subir os containers
 
 ```bash
 docker compose up -d --build
-```
-
-Confira o estado:
-
-```bash
 docker compose ps
 ```
 
-O primeiro boot das chains cria o estado local e pode levar alguns instantes. O
-script de setup aguarda os RPCs ficarem disponíveis e as chains terminarem a
-sincronização.
+No primeiro boot, aguarde a criação do estado local das chains. O setup também
+espera os RPCs ficarem disponíveis e a sincronização terminar.
 
-Opcionalmente, verifique os endpoints da chain A:
+Verificação opcional da chain A:
 
 ```bash
 curl http://localhost:26657/status
@@ -84,9 +177,7 @@ curl -H "Content-Type: application/json" \
   http://localhost:8545
 ```
 
-## 5. Configurar o YUI
-
-### Configuração padrão
+## 6. Configurar o YUI
 
 ```bash
 python scripts/setup_yui.py
@@ -94,54 +185,70 @@ python scripts/setup_yui.py
 
 Sem argumentos, o setup:
 
-1. verifica o container YUI e os RPCs de todas as chains;
-2. inicializa a configuração global do YUI;
+1. verifica o YUI e os RPCs de todas as chains;
+2. inicializa a configuração global;
 3. gera e registra as chains do `chains.json`;
 4. importa as chaves dos relayers;
-5. completa cada saldo até 100 XRP, quando necessário;
+5. completa seus saldos até 100 XRP, quando necessário;
 6. inicializa os light clients locais;
 7. registra o path `xrplevm-a-b`;
 8. cria ou valida os IBC clients, a connection e o channel;
 9. exibe os IDs resultantes.
 
-As etapas que já foram concluídas são reutilizadas ou ignoradas quando possível.
-Os arquivos persistentes do YUI ficam em `relayer_config/yui` pelo bind mount do
-Compose.
+As etapas existentes são reutilizadas ou ignoradas quando possível. O estado
+fica persistido em `relayer_config/yui`.
 
-### Argumento `--config`
+## 7. Iniciar o serviço do relayer
 
-Configura somente uma chain já declarada no `chains.json`, incluindo arquivo de
-configuração, registro no YUI, chave, financiamento e light client:
+Em outro terminal:
+
+```bash
+docker exec yui-relayer yrly service start xrplevm-a-b
+```
+
+Mantenha esse terminal aberto durante as transferências. O setup não inicia o
+serviço automaticamente.
+
+[⬆ Voltar ao topo](#topo)
+
+---
+
+<a id="setup"></a>
+# ⚙️ Modos do setup
+
+## Comportamento padrão
+
+Configura todas as chains declaradas e abre o path A ↔ B:
+
+```bash
+python scripts/setup_yui.py
+```
+
+## `--config CHAIN`
+
+Configura apenas a chain indicada, incluindo registro, chave, financiamento e
+light client. A chain deve existir no `chains.json` e estar ativa no Compose.
 
 ```bash
 python scripts/setup_yui.py --config xrplevm-d
 ```
 
-Antes disso, inclua a chain no `chains.json`, regenere o Compose e suba seu
-container:
+Esse argumento não cria um path automaticamente.
 
-```bash
-python scripts/render_docker_compose.py
-docker compose up -d --build
-```
+## `--path SOURCE DESTINATION`
 
-O argumento `--config` não cria um path automaticamente.
-
-### Argumento `--path`
-
-Registra e abre um path entre duas chains já configuradas no YUI. A primeira é
-a origem (`src`) e a segunda é o destino (`dst`):
+Registra o path e cria ou valida clients, connection e channel entre duas chains
+já configuradas. A primeira chain será `src` e a segunda, `dst`.
 
 ```bash
 python scripts/setup_yui.py --path xrplevm-a xrplevm-d
 ```
 
-Esse comando gera o path `xrplevm-a-d` e cria ou valida seus IBC clients,
-connection e channel. Ele não repete a configuração nem o financiamento das
-chains.
+Nesse exemplo, o nome gerado será `xrplevm-a-d`.
 
-Para configurar uma nova chain e abrir seu path na mesma execução, combine os
-argumentos:
+## Combinação dos argumentos
+
+É possível configurar uma nova chain e abrir seu path na mesma execução:
 
 ```bash
 python scripts/setup_yui.py \
@@ -149,62 +256,53 @@ python scripts/setup_yui.py \
   --path xrplevm-a xrplevm-d
 ```
 
-Os nomes informados em `--config` e `--path` devem corresponder exatamente ao
-campo `name` do `chains.json`.
+Os nomes devem corresponder exatamente ao campo `name` do `chains.json`.
 
-Para consultar toda a configuração resultante:
+Para consultar a configuração resultante:
 
 ```bash
 docker exec yui-relayer yrly config show
 ```
 
-## 6. Iniciar o serviço do YUI
+[⬆ Voltar ao topo](#topo)
 
-O setup não inicia o serviço do relayer. Em outro terminal, use o nome do path
-mostrado ao final da configuração padrão:
+---
 
-```bash
-docker exec yui-relayer yrly service start xrplevm-a-b
-```
+<a id="transferencia"></a>
+# 🧪 Transferência IBC
 
-Mantenha esse terminal aberto durante a transferência. Para outro path, substitua
-`xrplevm-a-b` pelo nome correspondente, por exemplo `xrplevm-a-d`.
+O teste envia 1 XRP da chain A para a chain B.
 
-## 7. Preparar o teste de transferência
+## 1. Identificar o channel de origem
 
-O arquivo `tests/transfer_cross_chain.py` envia 1 XRP da chain A para a chain B.
-Antes de executá-lo, confira estas constantes no início do arquivo:
+Ao final do setup, localize o channel exibido no endpoint `src`. Atualize estas
+constantes em `tests/transfer_cross_chain.py`:
 
 ```python
-SOURCE_CHAIN = "Chain A"
+SOURCE_CHAIN = "xrplevm-a"
 SOURCE_CHANNEL = "channel-N"
-DESTINATION_CHAIN = "Chain B"
+DESTINATION_CHAIN = "xrplevm-b"
 ```
 
-Use em `SOURCE_CHANNEL` o channel do endpoint `src` exibido pela etapa final do
-setup. O número não é necessariamente `channel-0`: ele depende do estado que já
-existe nos volumes.
+O número do channel depende do estado persistido e não é necessariamente
+`channel-0`. Se as contas forem alteradas, revise também os endereços e a chave
+privada definidos no teste.
 
-Se as credenciais ou o destinatário tiverem sido alterados, atualize também
-`SOURCE_EVM_PRIVATE_KEY`, `SOURCE_COSMOS_ADDRESS` e
-`DESTINATION_COSMOS_ADDRESS` no teste.
+## 2. Executar a transferência
 
-## 8. Realizar a transação IBC
-
-Com o serviço YUI ativo no outro terminal, execute:
+Com `yrly service start` ativo em outro terminal:
 
 ```bash
 python tests/transfer_cross_chain.py
 ```
 
-Uma submissão aceita pela chain de origem apresenta `Code: 0` e um `TxHash`, por
-exemplo:
+Uma transação aceita pela origem apresenta `Code: 0` e um `TxHash`:
 
 ```json
 {
-  "Source Chain": "Chain A",
+  "Source Chain": "xrplevm-a",
   "Source Chain ID": "xrplevm_1450001-1",
-  "Destination Chain": "Chain B",
+  "Destination Chain": "xrplevm-b",
   "Destination Chain ID": "xrplevm_1450002-1",
   "Source Port": "transfer",
   "Source Channel": "channel-N",
@@ -214,34 +312,93 @@ exemplo:
 }
 ```
 
-O resultado também é acrescentado a `tests/logfile.jsonl`. Aguarde o YUI relayar
-o pacote e o acknowledgement.
+O resultado também é acrescentado a `tests/logfile.jsonl`. `Code: 0` confirma a
+submissão na origem; mantenha o YUI ativo para relayar o pacote e o ack.
 
-## 9. Conferir o saldo no destino
-
-O script abaixo consulta, por padrão, o endereço de destino na REST API da chain
-B:
+## 3. Conferir o destino
 
 ```bash
 python utils/check_balance_cosmos.py
 ```
 
-Também é possível consultar diretamente:
+Ou consulte diretamente a REST API da chain B:
 
 ```bash
 curl http://localhost:2317/cosmos/bank/v1beta1/balances/ethm1dakgyqjulg29m5fmv992g2y66m9g2mjn6hahwg
 ```
 
-Uma transferência IBC recebida pode aparecer como voucher com denominação
-`ibc/<hash>`, além dos saldos nativos em `axrp`.
+O ativo recebido via IBC pode aparecer como voucher `ibc/<hash>`, além dos
+saldos nativos em `axrp`.
 
-## Encerrar o ambiente
+[⬆ Voltar ao topo](#topo)
 
-Interrompa o processo `yrly service start` com `Ctrl+C` e depois execute:
+---
+
+<a id="nova-chain"></a>
+# ➕ Adicionar uma chain
+
+1. Adicione a chain ao array `chains` do `chains.json`.
+2. Garanta que IP e portas não conflitem com os serviços existentes.
+3. Regenere e suba o Compose.
+4. Configure a chain e, opcionalmente, um path.
+
+```bash
+python scripts/render_docker_compose.py
+docker compose up -d --build
+
+python scripts/setup_yui.py \
+  --config xrplevm-d \
+  --path xrplevm-a xrplevm-d
+```
+
+Inicie o serviço usando o nome informado pelo setup:
+
+```bash
+docker exec yui-relayer yrly service start xrplevm-a-d
+```
+
+[⬆ Voltar ao topo](#topo)
+
+---
+
+<a id="limpeza"></a>
+# 🧹 Limpeza
+
+Interrompa `yrly service start` com `Ctrl+C` e derrube os containers:
 
 ```bash
 docker compose down
 ```
 
-Os volumes nomeados das chains e o diretório `relayer_config/yui` preservam o
-estado para a próxima execução.
+Esse comando preserva os volumes das chains e `relayer_config/yui`.
+
+Para remover também os volumes nomeados e reinicializar o estado on-chain:
+
+```bash
+docker compose down -v
+```
+
+> `docker compose down -v` apaga o estado persistido das chains. Use somente
+> quando quiser recriar o ambiente desde o genesis.
+
+[⬆ Voltar ao topo](#topo)
+
+---
+
+<a id="codigo-fonte"></a>
+# 📄 Código-fonte
+
+- Projeto: [brunolima2696/xrpl-cosmos](https://github.com/brunolima2696/xrpl-cosmos)
+- Fork YUI: [brunolima2696/yui-relayer](https://github.com/brunolima2696/yui-relayer)
+- YUI upstream: [hyperledger-labs/yui-relayer](https://github.com/hyperledger-labs/yui-relayer)
+- XRPL EVM Node: [xrplevm/node](https://github.com/xrplevm/node)
+
+Para atualizar o submódulo após publicar uma alteração no fork:
+
+```bash
+git -C yui-relayer pull --ff-only origin main
+git add yui-relayer
+git commit -m "Update YUI relayer submodule"
+```
+
+[⬆ Voltar ao topo](#topo)

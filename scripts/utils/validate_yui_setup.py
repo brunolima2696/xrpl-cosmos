@@ -14,17 +14,19 @@ def main():
         raise RuntimeError(f"Path {args.path} não encontrado ao finalizar")
 
     print(f"Path: {args.path}")
-    for label in ("src", "dst"):
-        endpoint = path[label]
+    for endpoint_name in ("src", "dst"):
+        endpoint = path[endpoint_name]
         fields = (
             endpoint.get("client-id"),
             endpoint.get("connection-id"),
             endpoint.get("channel-id"),
         )
         if not all(fields):
-            raise RuntimeError(f"Endpoint {label} está incompleto: {endpoint}")
+            raise RuntimeError(
+                f"Endpoint {endpoint_name} está incompleto: {endpoint}"
+            )
         print(
-            f"{label}: chain={endpoint.get('chain-id')} "
+            f"{endpoint_name}: chain={endpoint.get('chain-id')} "
             f"client={fields[0]} connection={fields[1]} channel={fields[2]}"
         )
 

@@ -56,17 +56,17 @@ def fund_yui_key(chain):
     rpc_url = f"http://localhost:{chain['evm_rpc_port']}"
     w3 = Web3(Web3.HTTPProvider(rpc_url))
     if not w3.is_connected():
-        raise ConnectionError(f"Sem conexão com {chain['label']} em {rpc_url}")
+        raise ConnectionError(f"Sem conexão com {chain['name']} em {rpc_url}")
 
     alice_address = Web3.to_checksum_address(os.environ["ALICE_EVM_ADDRESS"])
     alice_private_key = os.environ["ALICE_PRIVATE_KEY"]
     target_balance = xrp_to_wei(TARGET_BALANCE_XRP)
     current_balance = w3.eth.get_balance(evm_address)
 
-    print(f"{chain['label']}: YUI {cosmos_address}")
+    print(f"{chain['name']}: YUI {cosmos_address}")
     if current_balance >= target_balance:
         print(
-            f"{chain['label']}: saldo já é de pelo menos "
+            f"{chain['name']}: saldo já é de pelo menos "
             f"{TARGET_BALANCE_XRP} XRP; financiamento ignorado"
         )
         return
@@ -85,13 +85,13 @@ def fund_yui_key(chain):
     signed = w3.eth.account.sign_transaction(tx, alice_private_key)
     tx_hash = w3.eth.send_raw_transaction(signed.raw_transaction)
 
-    print(f"{chain['label']}: enviando {amount_xrp} XRP para {evm_address}")
-    print(f"{chain['label']}: tx {tx_hash.hex()}")
+    print(f"{chain['name']}: enviando {amount_xrp} XRP para {evm_address}")
+    print(f"{chain['name']}: tx {tx_hash.hex()}")
 
     receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
     if receipt.status != 1:
         raise RuntimeError(f"Transação falhou: {tx_hash.hex()}")
-    print(f"{chain['label']}: confirmado no bloco {receipt.blockNumber}")
+    print(f"{chain['name']}: confirmado no bloco {receipt.blockNumber}")
 
 
 def main():

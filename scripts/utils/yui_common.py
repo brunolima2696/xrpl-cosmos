@@ -60,7 +60,6 @@ def read_chains():
 
     required_fields = (
         "name",
-        "label",
         "service",
         "chain_id",
         "rpc_port",

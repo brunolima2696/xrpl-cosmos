@@ -1,0 +1,3 @@
+[submodule "yui-relayer"]
+	path = yui-relayer
+	url = https://github.com/brunolima2696/yui-relayer.git

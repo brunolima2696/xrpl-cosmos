@@ -11,7 +11,7 @@ services:
     environment:
       CHAIN_ID: "xrplevm_1450001-1"
       MONIKER: "xrplevm-a"
-      CHAIN_LABEL: "Chain A"
+      CHAIN_NAME: "xrplevm-a"
     ports:
       - "26657:26657"
       - "1317:1317"
@@ -31,7 +31,7 @@ services:
     environment:
       CHAIN_ID: "xrplevm_1450002-1"
       MONIKER: "xrplevm-b"
-      CHAIN_LABEL: "Chain B"
+      CHAIN_NAME: "xrplevm-b"
     ports:
       - "36657:26657"
       - "2317:1317"
@@ -51,7 +51,7 @@ services:
     environment:
       CHAIN_ID: "xrplevm_1450003-1"
       MONIKER: "xrplevm-c"
-      CHAIN_LABEL: "Chain C"
+      CHAIN_NAME: "xrplevm-c"
     ports:
       - "46657:26657"
       - "3317:1317"

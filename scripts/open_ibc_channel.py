@@ -23,12 +23,12 @@ def save_chains_data(data):
     )
 
 
-def find_chain(chains, label):
+def find_chain(chains, name):
     for chain in chains:
-        if chain["label"] == label or chain["name"] == label or chain["chain_id"] == label:
+        if chain["name"] == name or chain["chain_id"] == name:
             return chain
 
-    raise ValueError(f"Chain não encontrada: {label}")
+    raise ValueError(f"Chain não encontrada: {name}")
 
 
 def get_channels(chain):
@@ -73,12 +73,12 @@ def get_new_channel(before, after):
     return new_ids[0]
 
 
-def open_ibc_channel(source_label, destination_label):
+def open_ibc_channel(source_name, destination_name):
     data = load_chains_data()
     chains = data["chains"]
 
-    source_chain = find_chain(chains, source_label)
-    destination_chain = find_chain(chains, destination_label)
+    source_chain = find_chain(chains, source_name)
+    destination_chain = find_chain(chains, destination_name)
 
     source_before = get_channels(source_chain)
     destination_before = get_channels(destination_chain)
@@ -94,13 +94,13 @@ def open_ibc_channel(source_label, destination_label):
     source_chain.setdefault("channels", {})
     destination_chain.setdefault("channels", {})
 
-    source_chain["channels"][destination_chain["label"]] = source_channel_id
-    destination_chain["channels"][source_chain["label"]] = destination_channel_id
+    source_chain["channels"][destination_chain["name"]] = source_channel_id
+    destination_chain["channels"][source_chain["name"]] = destination_channel_id
 
     save_chains_data(data)
 
-    print(f"{source_chain['label']} -> {destination_chain['label']}: {source_channel_id}")
-    print(f"{destination_chain['label']} -> {source_chain['label']}: {destination_channel_id}")
+    print(f"{source_chain['name']} -> {destination_chain['name']}: {source_channel_id}")
+    print(f"{destination_chain['name']} -> {source_chain['name']}: {destination_channel_id}")
     print(f"Atualizado: {CHAINS_FILE}")
 
 
