@@ -87,6 +87,7 @@ xrpl-cosmos/
 ├── Dockerfile                  # build da imagem local do XRPL EVM Node
 ├── docker-compose.yaml         # chains e container persistente do YUI
 ├── chains.json                 # metadados, portas e chaves das chains
+├── accounts.json               # metadados, endereços e chaves das contas
 ├── requirements.txt            # dependências dos scripts Python
 ├── relayer_config/
 │   └── yui/                    # configuração e estado persistente do YUI
