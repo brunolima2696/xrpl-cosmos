@@ -1,0 +1,36 @@
+; cosmos 0 alice -> besu 0 bob
+docker exec cosmos_chain_0 simd tx ibc-transfer transfer \
+  transfer channel-2 \
+  0xf17f52151EbEF6C7334FAD080c5704D77216b732 \
+  1000000000000000000ibc/0A987E99CD80F7E3B709AB331C42F1AB4340A3BA7B97877B6BAF623F61B26C99 \
+  --from alice \
+  --chain-id cosmos_chain_0 \
+  --home /opt/cosmos/testdata/cosmos_chain_0 \
+  --keyring-backend test \
+  --node tcp://localhost:26657 \
+  --gas auto \
+  --gas-adjustment 1.5 \
+  --gas-prices 0.025stake \
+  -y
+
+; fund cosmos 0 alice 
+docker exec cosmos_chain_0 simd tx bank send \
+  relayer \
+  cosmos1qdn7zayvt5jynasx0hdnaecgree5xydt0fjh7g \
+  1000000stake \
+  --from relayer \
+  --chain-id cosmos_chain_0 \
+  --home /opt/cosmos/testdata/cosmos_chain_0 \
+  --keyring-backend test \
+  --node tcp://localhost:26657 \
+  --gas auto \
+  --gas-adjustment 1.5 \
+  --gas-prices 0.025stake \
+  -y
+
+ICS20_ADDR="0xfb88de099e13c3ed21f80a7a1e49f8caecf10df6"
+cast call "$ICS20_ADDR" \
+  "balanceOf(address,string)(uint256)" \
+  "$BOB_ADDR" \
+  "transfer/channel-0/stake" \
+  --rpc-url http://127.0.0.1:8645

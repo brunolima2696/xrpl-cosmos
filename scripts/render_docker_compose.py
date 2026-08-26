@@ -13,19 +13,22 @@ OUTPUT_FILE = ROOT_DIR / "docker-compose.yaml"
 
 def load_chains():
     data = json.loads(CHAINS_FILE.read_text(encoding="utf-8"))
-    return data["chains"]
+    return [
+        chain
+        for chain in data["chains"]
+        if chain.get("managed_by_compose", True)
+    ]
 
 
 def volume_name(chain):
     return chain.get("volume", f"{chain['service']}-data")
 
 
-def render_chain_service(chain, include_build=False):
-    build_block = "    build: *xrplevm-build\n" if include_build else ""
-    
+def render_chain_service(chain):
     return f"""  {chain["service"]}:
-    image: xrplevm-local:dev 
-{build_block}    container_name: {chain["service"]}
+    image: xrplevm-local:dev
+    build: *xrplevm-build
+    container_name: {chain["service"]}
     command: ["/usr/local/bin/start-persistent.sh"]
     environment:
       CHAIN_ID: {json.dumps(str(chain["chain_id"]))}
@@ -51,8 +54,7 @@ def render_compose():
     chains = load_chains()
 
     services = "\n".join(
-        render_chain_service(chain, include_build=(index == 0))
-        for index, chain in enumerate(chains)
+        render_chain_service(chain) for chain in chains
     )
     
     depends_on = "\n".join(

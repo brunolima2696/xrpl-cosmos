@@ -6,10 +6,10 @@ from yui_common import (
     YUI_HOME,
     chain_template,
     cli_main,
+    configured_chain_ids,
     run_yui,
     selected_chains_from_cli,
     write_json,
-    yui_config,
 )
 
 
@@ -17,9 +17,7 @@ def main():
     chains = selected_chains_from_cli(
         "Registra no YUI as chains selecionadas."
     )
-    configured = {
-        chain["chain-id"] for chain in yui_config().get("chains", [])
-    }
+    configured = configured_chain_ids()
     missing = [chain for chain in chains if chain["chain_id"] not in configured]
     if not missing:
         print("Todas as chains já estão registradas; etapa ignorada.")

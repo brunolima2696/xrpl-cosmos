@@ -4,6 +4,7 @@ from yui_common import (
     DEFAULT_PATH_CHAINS,
     PATH_CONFIG_DIR,
     cli_main,
+    configured_chain_ids,
     path_name,
     path_template,
     select_chains,
@@ -41,11 +42,9 @@ def main():
     write_json(path_file, content)
 
     config = yui_config()
-    configured_chain_ids = {
-        chain["chain-id"] for chain in config.get("chains", [])
-    }
+    registered_chain_ids = configured_chain_ids(config)
     required_chain_ids = {source["chain_id"], destination["chain_id"]}
-    missing_chain_ids = required_chain_ids - configured_chain_ids
+    missing_chain_ids = required_chain_ids - registered_chain_ids
     if missing_chain_ids:
         raise RuntimeError(
             "Chains ainda não registradas no YUI: " + ", ".join(missing_chain_ids)

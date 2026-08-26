@@ -1,9 +1,6 @@
 .env
 *.env
 
-relayer_config/yui/*
-!relayer_config/yui/.gitkeep
-
 node_modules
 __pycache__
 *.pyc

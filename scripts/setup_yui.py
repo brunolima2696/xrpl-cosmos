@@ -11,7 +11,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 UTILS_DIR = ROOT_DIR / "scripts" / "utils"
 sys.path.insert(0, str(UTILS_DIR))
 
-from yui_common import DEFAULT_PATH_CHAINS, path_name  # noqa: E402
+from yui_common import DEFAULT_PATH_CHAINS, path_name  
 
 
 CONFIG_STAGES = (
@@ -61,6 +61,11 @@ def run_stage(name, filename, *arguments):
 
 
 def configure_chains(chain_names):
+    run_stage(
+        "validar os metadados das chains",
+        "validate_yui_chains.py",
+        *chain_names,
+    )
     run_stage(
         "inicializar a configuração global do YUI",
         "init_yui_config.py",
@@ -139,6 +144,12 @@ def main():
     if not default_run:
         requested = configure_chain_names + list(selected_path or ())
         verification_names = list(dict.fromkeys(requested))
+
+    run_stage(
+        "conectar chains externas à rede do YUI",
+        "connect_yui_networks.py",
+        *verification_names,
+    )
 
     run_stage(
         "verificar containers e RPCs",

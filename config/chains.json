@@ -1,0 +1,46 @@
+{
+  "chains": [
+    {
+      "name": "xrplevm-a",
+      "profile": "xrpl-evm",
+      "chain_id": "xrplevm_1450001-1",
+      "service": "xrplevm-a",
+      "ip": "172.30.0.10",
+      "ports": {
+        "rpc": 26657,
+        "rest": 1317,
+        "grpc": 9090,
+        "evm_rpc": 8545,
+        "evm_ws": 8546
+      }
+    },
+    {
+      "name": "xrplevm-b",
+      "profile": "xrpl-evm",
+      "chain_id": "xrplevm_1450002-1",
+      "service": "xrplevm-b",
+      "ip": "172.30.0.11",
+      "ports": {
+        "rpc": 36657,
+        "rest": 2317,
+        "grpc": 19090,
+        "evm_rpc": 9545,
+        "evm_ws": 9546
+      }
+    },
+    {
+      "name": "xrplevm-c",
+      "profile": "xrpl-evm",
+      "chain_id": "xrplevm_1450003-1",
+      "service": "xrplevm-c",
+      "ip": "172.30.0.12",
+      "ports": {
+        "rpc": 46657,
+        "rest": 3317,
+        "grpc": 29090,
+        "evm_rpc": 10545,
+        "evm_ws": 10546
+      }
+    }
+  ]
+}

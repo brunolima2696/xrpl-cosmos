@@ -1,18 +1,6 @@
 {
   "accounts": [
     {
-      "name": "alice",
-      "chains": [
-        "xrplevm-a",
-        "xrplevm-b",
-        "xrplevm-c"
-      ],
-      "evm_address": "0x6f6c82025cfa145dd13b614aa4289ad6ca856e53",
-      "cosmos_address": "ethm1dakgyqjulg29m5fmv992g2y66m9g2mjn6hahwg",
-      "private_key": "0xD8161FD5FDF4EB216A6556DC639A2543B0ED9ABDBCEB9971FE08CFBA56F588C8",
-      "mnemonic": "birth rebuild refuse area aisle language bullet pride place clutch paddle drama"
-    },
-    {
       "name": "relayer-xrplevm-a",
       "chains": [
         "xrplevm-a"

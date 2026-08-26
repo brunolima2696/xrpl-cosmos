@@ -1,10 +1,15 @@
-from yui_common import cli_main, run_yui, selected_chains_from_cli
+from yui_common import (
+    chain_mnemonic,
+    cli_main,
+    run_yui,
+    selected_chains_from_cli,
+)
 
 
 def import_key(chain):
     chain_id = chain["chain_id"]
     key_name = chain["key_name"]
-    mnemonic = chain["relayer_mnemonic"].strip()
+    mnemonic = chain_mnemonic(chain)
 
     print(f"Importando {key_name} em {chain_id}...")
     result = run_yui(
